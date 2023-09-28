@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WikiDash</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            color: white;
+        }
+        header {
+            background-color: #9403d3; /* Blue header */
+            text-align: center;
+            padding: 1em 0;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            background-color: #9403d3; /* Darker blue navigation background */
+        }
+
+        nav li {
+            margin: 1em;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: white;
+            padding: 5px 10px;
+            border: 1px solid white;
+            border-radius: 5px;
+        }
+
+        main {
+            padding: 2em;
+        }
+
+        .featured-article {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 2em;
+            margin-bottom: 2em;
+        }
+
+        .featured-article h3 {
+            margin-top: 0;
+        }
+
+        .recent-activity,
+        .about-us,
+        .contact {
+            background-color: #ffffff; /* White background */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            color: #333; /* Dark text */
+        }
+
+        .recent-activity h2,
+        .about-us h2,
+        .contact h2 {
+            color: #333; /* Dark text */
+            margin-bottom: 15px;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff; /* White background */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        form input[type="text"],
+        form input[type="password"],
+        form input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        form input[type="submit"] {
+            background-color: #041421; /* Blue button background */
+            color: white;
+            cursor: pointer;
+        }
+
+        form input[type="submit"]:hover {
+            background-color: #9403d3; /* Darker blue on hover */
+        }
+
+        footer {
+            text-align: center;
+            padding: 1em 0;
+            background-color: #9403d3; /* Blue footer */
+            color: white;
+        }
+        .logout-button {
+            float: right;
+            margin-right: 30px;
+            margin-top: -20px; /* Adjust this value to move the button upwards */
+            text-decoration: none;
+            color: white;
+            padding: 5px 10px;
+            border: 1px solid white;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>WikiDash</h1>
+        <a href="http://localhost:3000/" class="logout-button">Logout</a>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/signup">Sign Up</a></li>
+            <li><a href="/login">Login</a></li>
+        </ul>
+    </nav>
+    <main>
+        <section class="recent-activity">
+            <h2>Search WikiDash</h2>
+            <form id="searchForm">
+                <input type="text" id="searchInput" placeholder="Enter search query">
+                <button type="submit">Search</button>
+            </form>
+            <div id="searchResults"></div>
+        </section>
+
+        <section class="about-us">
+            <h2>About Us</h2>
+            <p>WikiDash is a free online encyclopedia, created and edited by volunteers around the world and hosted by the Wikimedia Foundation.<br> It's purpose is to benefit readers by containing information on all branches of knowledge.<br> Hosted by the Wikimedia Foundation, it consists of freely editable content, whose articles also have numerous links to guide readers to more information</p>
+        </section>
+
+        <section class="contact">
+            <h2>Contact</h2>
+            <p>If you have any questions or feedback, please feel free to contact us:</p>
+            <p>Email: contact@wikidash.com</p>
+            <p>Phone: +1-123-456-7890</p>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2023 WikiDash. All rights reserved.</p>
+    </footer>
+    <!-- ... Your existing JavaScript code ... -->
+    <script>
+        const searchForm = document.getElementById('searchForm');
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+    
+        searchForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+    
+            const searchTerm = searchInput.value;
+    
+            try {
+                const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${searchTerm}`);
+    
+                const data = await response.json();
+    
+                if (data.title) {
+                    const resultHTML = `
+                        <h3>${data.title}</h3>
+                        <p>${data.extract}</p>
+                        <a href="${data.content_urls.desktop.page}">Read more</a>
+                    `;
+                    searchResults.innerHTML = resultHTML;
+                } else {
+                    searchResults.innerHTML = '<p>No results found.</p>';
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        });
+    </script>
+</body>
+</html>
